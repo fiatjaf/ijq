@@ -42,7 +42,7 @@ loop:
 			reader := bufio.NewReader(os.Stdin)
 
 			for {
-				fmt.Print("\u001B[36m(jq)\u001B[m| ")
+				fmt.Print("\u001B[33m(./jq)\u001B[m| ")
 
 				bline, _, err := reader.ReadLine()
 				if err != nil {
