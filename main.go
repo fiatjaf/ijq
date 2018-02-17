@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -30,6 +31,7 @@ func main() {
 	}
 
 	var prev = ""
+	var globals = []string{"module {iqj: true}"}
 	var backlog = []string{". as $l0"}
 	var varname = "$l0"
 	var num = 0
@@ -47,15 +49,53 @@ loop:
 					quit <- true
 					return
 				}
-				line := string(bytes.TrimSpace(bline))
-				if line[len(line)-1] == ';' {
-					line += "."
-				}
+				line := string(bline)
+
+				// check for globals (def, include, import)
+				var addedglobals = 0
+				line = GLOBAL.ReplaceAllStringFunc(line, func(global string) string {
+					addedglobals++
+
+					if global[len(global)-1] == ';' {
+						globals = append(globals, global[0:len(global)-1])
+					} else {
+						globals = append(globals, global)
+					}
+					return ""
+				})
 
 				o := new(bytes.Buffer)
 				e := new(bytes.Buffer)
 
-				filter := strings.Join(backlog, "|") + "|" + varname + "|" + line
+				line = strings.TrimSpace(line)
+				if len(line) == 0 {
+					// if this line came with some global statement,
+					// just to be sure, but don't print the output
+					if addedglobals > 0 {
+						cmd := exec.Command("jq", strings.Join(globals, ";")+";.")
+						cmd.Stdin = bytes.NewBufferString("{}")
+						cmd.Stdout = o
+						cmd.Stderr = e
+
+						err = cmd.Run()
+						if err != nil {
+							// there is an error in some global statement:
+							// log the error,
+							// remove them and proceed as if nothing happened.
+							log.Print(e.String())
+							globals = globals[0 : len(globals)-addedglobals]
+							continue
+						}
+					}
+
+					// otherwise it is just an empty line, proceed while doing nothing.
+					continue
+				}
+
+				filter := strings.Join(globals, ";") + ";" +
+					strings.Join(backlog, "|") + "|" +
+					varname + "|" +
+					line
 
 				cmd := exec.Command("jq", "-C", filter)
 				cmd.Stdin = getStdinRepeatedly()
@@ -93,3 +133,5 @@ loop:
 
 	return
 }
+
+var GLOBAL = regexp.MustCompile(`(def|import|include)[^;]+(;)?`)
