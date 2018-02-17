@@ -44,12 +44,23 @@ loop:
 			for {
 				fmt.Print("\u001B[33m(./jq)\u001B[m| ")
 
+				filterPrefix := strings.Join(globals, ";") + ";" +
+					strings.Join(backlog, "|") + "|" +
+					varname + "|"
+
 				bline, _, err := reader.ReadLine()
 				if err != nil {
 					quit <- true
 					return
 				}
-				line := string(bline)
+				line := strings.TrimSpace(string(bline))
+
+				// special commands
+				switch line {
+				case "debug":
+					fmt.Println(filterPrefix)
+					continue
+				}
 
 				// check for globals (def, include, import)
 				var addedglobals = 0
@@ -92,10 +103,7 @@ loop:
 					continue
 				}
 
-				filter := strings.Join(globals, ";") + ";" +
-					strings.Join(backlog, "|") + "|" +
-					varname + "|" +
-					line
+				filter := filterPrefix + line
 
 				cmd := exec.Command("jq", "-C", filter)
 				cmd.Stdin = getStdinRepeatedly()
