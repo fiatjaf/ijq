@@ -32,8 +32,8 @@ func main() {
 
 	var prev = ""
 	var globals = []string{"module {iqj: true}"}
-	var backlog = []string{". as $l0"}
-	var varname = "$l0"
+	var backlog = []string{". as $v0"}
+	var varname = "$v0"
 	var num = 0
 
 loop:
@@ -115,7 +115,7 @@ loop:
 				} else {
 					// assign to a variable
 					num++
-					varname = "$l" + strconv.Itoa(num)
+					varname = "$v" + strconv.Itoa(num)
 					fmt.Println(res + "\u001B[90m as " + varname + "\u001B[m")
 					backlog = append(backlog, "("+line+") as "+varname)
 				}
