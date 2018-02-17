@@ -106,6 +106,7 @@ loop:
 				err = cmd.Run()
 				if err != nil {
 					log.Print(e.String())
+					globals = globals[0 : len(globals)-addedglobals]
 					continue
 				}
 
