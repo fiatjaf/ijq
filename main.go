@@ -126,7 +126,7 @@ loop:
 					num++
 					varname = "$v" + strconv.Itoa(num)
 					fmt.Println(res + "\u001B[90m as " + varname + "\u001B[m")
-					backlog = append(backlog, "("+line+") as "+varname)
+					backlog = append(backlog, "("+line+") as "+varname+"|"+varname)
 				}
 
 				prev = res
