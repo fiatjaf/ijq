@@ -65,10 +65,8 @@ loop:
 
 				err = cmd.Run()
 				if err != nil {
-					log.Print(err)
 					log.Print(e.String())
-					quit <- true
-					return
+					continue
 				}
 
 				res := strings.TrimSuffix(o.String(), "\n")
