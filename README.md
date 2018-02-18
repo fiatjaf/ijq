@@ -9,7 +9,7 @@ Example session
 
 ```json
 fiatjaf@mises ~> echo 'def sum(a;b): a + b;' > math.jq
-fiatjaf@mises ~> rlwrap ijq
+fiatjaf@mises ~> ijq
 (./jq)| {"numbers": [1,2]}
 {
   "numbers": [
@@ -59,7 +59,7 @@ Installation
 ------------
 
 ```
-go get github.com/fiatjaf/ijq
+go get github.com/fiatjaf/ijq/...
 ```
 
 Recommended:
@@ -71,7 +71,7 @@ sudo apt-get install rlwrap # or whatever, but please install rlwrap
 Then
 
 ```
-rlwrap ijq # or just ijq if you don't have rlwrap
+ijq [file]
 ```
 
 
