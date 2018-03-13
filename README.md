@@ -8,29 +8,22 @@ Example session
 ---------------
 
 ```json
-fiatjaf@mises ~> echo 'def sum(a;b): a + b;' > math.jq
-fiatjaf@mises ~> ijq
-(./jq)| {"numbers": [1,2]}
-{
-  "numbers": [
-    1,
-    2
-  ]
-} as $v1
+fiatjaf@cantillon ~> echo '{"numbers": [1,2]}' > data.json
+fiatjaf@cantillon ~> echo 'def sum(a;b): a + b;' > math.jq
+fiatjaf@cantillon ~> ijq data.json 
 (./jq)| import "math" as math
 (./jq)| math::sum(.numbers[0]; .numbers[1])
-3 as $v2
-(./jq)| $v1 | .sum = $v2
+3 as $v1
+(./jq)| $v0 | .sum = $v1
 {
   "numbers": [
     1,
     2
   ],
   "sum": 3
-} as $v3
-(./jq)| 
+} as $v2
 (./jq)| def addtag(tagname): .tags = (.tags // []) | .tags += [tagname]
-(./jq)| $v3 | addtag("silly-math")
+(./jq)| $v2 | addtag("silly-math")
 {
   "numbers": [
     1,
@@ -40,7 +33,7 @@ fiatjaf@mises ~> ijq
   "tags": [
     "silly-math"
   ]
-} as $v4
+} as $v3
 (./jq)| addtag("trivial")
 {
   "numbers": [
@@ -52,7 +45,8 @@ fiatjaf@mises ~> ijq
     "silly-math",
     "trivial"
   ]
-} as $v5
+} as $v4
+(./jq)| ⏎
 ```
 
 Installation
