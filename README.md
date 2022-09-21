@@ -52,8 +52,9 @@ fiatjaf@cantillon ~> ijq data.json
 Installation
 ------------
 
+Install using [`go install`](https://go.dev/ref/mod#go-install):
 ```
-go get github.com/fiatjaf/ijq/...
+go install github.com/fiatjaf/ijq/...@latest
 ```
 
 Recommended:
@@ -67,7 +68,6 @@ Then
 ```
 ijq [file]
 ```
-
 
 FAQ
 ---
